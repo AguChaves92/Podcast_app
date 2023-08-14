@@ -14,28 +14,39 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import { IPodcast } from "../types";
 import { howLongAgo } from "../utils/howLongAgo";
+import { formatTime } from "../utils/formatTime";
+import { useContextProvider } from "../hook/useMyContextHook";
 
 interface Props {
   data: IPodcast[];
   tableColumns: string[];
   isView?: boolean;
+  onRowClick: (e: number) => void;
 }
 
-const CustomTable = ({ tableColumns, isView = false, data }: Props) => {
+const CustomTable = ({
+  tableColumns,
+  isView = false,
+  data,
+  onRowClick,
+}: Props) => {
+  const { isPlaying, selectedTrack } = useContextProvider();
+
   return (
-    <Box sx={{
-        height:'70vh',
-        overflowY:'scroll',
-        width:'100%',
-        scrollbarwidth: 'thin',
-        '&::-webkit-scrollbar': {
-            width: '0.4em',
-          },
-          '&::-webkit-scrollbar-track': {
-           display:'none'
-          },
-         
-    }}>
+    <Box
+      sx={{
+        height: isView ? "40vh" : "60vh",
+        overflowY: "scroll",
+
+        scrollbarwidth: "thin",
+        "&::-webkit-scrollbar": {
+          width: "0.4em",
+        },
+        "&::-webkit-scrollbar-track": {
+          display: "none",
+        },
+      }}
+    >
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -48,7 +59,7 @@ const CustomTable = ({ tableColumns, isView = false, data }: Props) => {
                 <CustomCell align="right" color="rgba(255, 255, 255, 0.30)">
                   <AccessTimeIcon
                     sx={{
-                      color: "whitesmoke",
+                      color: "rgba(255, 255, 255, 0.30)",
                     }}
                   />
                 </CustomCell>
@@ -60,9 +71,38 @@ const CustomTable = ({ tableColumns, isView = false, data }: Props) => {
               <TableRow
                 key={item.trackId}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                onClick={() =>
+                  onRowClick(isView ? item.trackId : item.collectionId)
+                }
               >
                 <TableCell>
-                  <PlayArrowIcon sx={{ color: "whitesmoke" }} />
+                  {!isPlaying ? (
+                    <PlayArrowIcon sx={{ color: "whitesmoke" }} />
+                  ) : isPlaying &&
+                    isView &&
+                    selectedTrack &&
+                    selectedTrack.trackId === item.trackId ? (
+                    <PauseIcon
+                      sx={{
+                        borderRadius: "142.5px",
+                        backgorundColor: "#5C67DE",
+                        color: "white",
+                      }}
+                    />
+                  ) : isPlaying &&
+                    !isView &&
+                    selectedTrack &&
+                    selectedTrack.artistId === item.artistId ? (
+                    <PauseIcon
+                      sx={{
+                        borderRadius: "142.5px",
+                        backgorundColor: "#5C67DE",
+                        color: "white",
+                      }}
+                    />
+                  ) : (
+                    <PlayArrowIcon sx={{ color: "whitesmoke" }} />
+                  )}
                 </TableCell>
                 <TableCell>
                   <Box
@@ -80,7 +120,7 @@ const CustomTable = ({ tableColumns, isView = false, data }: Props) => {
                           fontSize: "16px",
                         }}
                       >
-                        {item.collectionName}
+                        {isView ? item.trackName : item.collectionName}
                       </Typography>
                       <Typography
                         sx={{
@@ -93,6 +133,20 @@ const CustomTable = ({ tableColumns, isView = false, data }: Props) => {
                     </Box>
                   </Box>
                 </TableCell>
+                {item.description && (
+                  <TableCell>
+                    <Typography
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.30)",
+                        fontSize: "14px",
+                      }}
+                    >
+                      {item?.description?.length < 10
+                        ? item.description
+                        : item.description.slice(0, 70)}
+                    </Typography>
+                  </TableCell>
+                )}
                 <TableCell>
                   <Typography
                     sx={{
@@ -103,6 +157,23 @@ const CustomTable = ({ tableColumns, isView = false, data }: Props) => {
                     {howLongAgo(item.releaseDate)}
                   </Typography>
                 </TableCell>
+                {item.trackTimeMillis && (
+                  <TableCell
+                    align="right"
+                    sx={{
+                      width: "60px",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.30)",
+                        fontSize: "14px",
+                      }}
+                    >
+                      {formatTime(item.trackTimeMillis)}
+                    </Typography>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

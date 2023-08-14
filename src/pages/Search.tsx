@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-
+import { useNavigate  } from 'react-router-dom';
 import { CustomSelectComponent } from "../components/CustomSelect";
 import CustomTextfield from "../components/CustomTextField";
 import CustomTable from "../components/CustomTable";
@@ -8,14 +8,19 @@ import { useContextProvider } from "../hook/useMyContextHook";
 
 
 const Search = () => {
-  const {handleSearch, podcastList}= useContextProvider()
-  const [searchWord, setSearchWord] = useState<string>("");
-  const handleChange = (e: string) => {
-    setSearchWord(e);
-  };
+  const navigate=useNavigate ()
+  const {handleSearch, podcastList, handleSearchEpisodes, podcastEpiosdesList, searchWord, setSearchWord}= useContextProvider()
 
 
+
+  const handleNavigate= (e:number)=>{
+     handleSearchEpisodes(e)
+     navigate('/view-details')
+  }
   
+
+
+  console.log(podcastEpiosdesList )
 
   return (
     <Box
@@ -25,7 +30,7 @@ const Search = () => {
         justifyContent: "center",
         alignItems: "center",
         width: "full",
-        height: "full",
+        height: "100%",
         padding: 2,
       }}
     >
@@ -39,9 +44,9 @@ const Search = () => {
           gap: 6,
         }}
       >
-        <CustomTextfield handleChange={handleChange} handleClick={()=>handleSearch(searchWord)}/>
+        <CustomTextfield handleChange={setSearchWord} handleClick={()=>handleSearch(searchWord)}/>
         <CustomSelectComponent />
-        <CustomTable tableColumns={["#", "Name", "Released"]} data={podcastList}/>
+        <CustomTable tableColumns={["#", "Name", "Released"]} data={podcastList} onRowClick={handleNavigate}/>
       </Box>
       <Box></Box>
     </Box>

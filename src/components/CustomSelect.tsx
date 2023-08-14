@@ -52,6 +52,7 @@ export const CustomSelectComponent = () => {
     >
       <Box
         style={{
+          height:'fit-content',
           overflow: "hidden",
           display: isVisible ? "flex" : "none",
           transition: " left 1.5s ease",
@@ -65,8 +66,8 @@ export const CustomSelectComponent = () => {
       <FormControl
         variant="standard"
         sx={{
-          m: 1,
           minWidth: 160,
+
           color: "whitesmoke",
           "MuiSelect-icon": {
             color: "whitesmoke",

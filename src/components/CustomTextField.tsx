@@ -5,26 +5,32 @@ import SearchIcon from "@mui/icons-material/Search";
 interface Props {
   handleChange: (e: string) => void;
   handleClick: () => void;
+  defaultValue?: string;
 }
 
-const CustomTextfield = ({ handleChange, handleClick }: Props) => {
+const CustomTextfield = ({
+  handleChange,
+  handleClick,
+  defaultValue,
+}: Props) => {
   const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       // Call your function here
-      handleClick()
+      handleClick();
     }
   };
 
   return (
     <StyledInput
       InputProps={{
-        startAdornment: <SearchIcon sx={{ color: "whitesmoke" }} onClick={
-          handleClick
-        }/>,
+        startAdornment: (
+          <SearchIcon sx={{ color: "whitesmoke" }} onClick={handleClick} />
+        ),
         autoComplete: "off",
         disableUnderline: true,
       }}
       fullWidth
+      defaultValue={defaultValue ? defaultValue : ""}
       placeholder="Search"
       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         handleChange(event.target.value);
@@ -38,7 +44,7 @@ export default CustomTextfield;
 
 export const StyledInput = styled(TextField)({
   borderRadius: "25px",
-
+  height:'40px',
   svg: {
     marginRight: "0.5rem",
   },
