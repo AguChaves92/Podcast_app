@@ -23,7 +23,7 @@ export function howLongAgo(data: string) {
   } else if (daysDiff >= 1 && daysDiff < 2) {
     return `Yesterday`;
   } else if (daysDiff > 1 && daysDiff < 7) {
-    return `Created ${daysDiff} ago`;
+    return `Created ${daysDiff} days ago`;
   } else if (daysDiff > 7) {
     return `Created ${Math.floor(daysDiff / 7)} weeks ago`;
   } else if (hoursDiff === 1) {
@@ -31,7 +31,7 @@ export function howLongAgo(data: string) {
   } else if (hoursDiff > 1) {
     return `Created ${hoursDiff} hours ago`;
   } else if (minutesDiff > 1) {
-    return `Created ${minutesDiff} ago`;
+    return `Created ${minutesDiff} minutes ago`;
   } else {
     return `Less than a minute ago`;
   }

@@ -3,5 +3,8 @@ export const formatTime = (milliseconds: number) => {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
 
-  return `${minutes}: ${seconds} `;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+
+  return `${formattedMinutes}:${formattedSeconds}`;
 };
