@@ -9,15 +9,29 @@ interface IContext {
   podcastEpiosdesList: IPodcast[];
   selectedTrack: IPodcast;
   isPlaying: boolean;
+  handleNext: () => void;
+  handleBack: () => void;
+  shuffleList: () => void;
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   chooseTrack: (e?: number) => void;
   handleSearch: (e: string) => void;
   handleSearchEpisodes: (e: number) => void;
+  handleSort: (e: string, b: boolean) => void;
+  loading: boolean;
 }
 
 export const MyContext = createContext<IContext>({
   selectedTrack: {} as IPodcast,
   chooseTrack: (id?: number) => {
+    return;
+  },
+  handleNext: () => {
+    return;
+  },
+  handleBack: () => {
+    return;
+  },
+  shuffleList: () => {
     return;
   },
   handlePlay: () => {
@@ -31,6 +45,9 @@ export const MyContext = createContext<IContext>({
   setSearchWord: () => {
     return;
   },
+  handleSort: (e: string, b: boolean) => {
+    return;
+  },
   podcastList: [],
   podcastEpiosdesList: [],
   handleSearchEpisodes: (e: number) => {
@@ -39,4 +56,5 @@ export const MyContext = createContext<IContext>({
   handleSearch: (e: string) => {
     return;
   },
+  loading: false,
 });

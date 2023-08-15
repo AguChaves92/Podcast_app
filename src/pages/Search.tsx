@@ -1,33 +1,83 @@
-import { Box } from "@mui/material";
-import { useNavigate  } from 'react-router-dom';
+import { Box, Backdrop, CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { CustomSelectComponent } from "../components/CustomSelect";
 import CustomTextfield from "../components/CustomTextField";
 import CustomTable from "../components/CustomTable";
-import { useState } from "react";
 import { useContextProvider } from "../hook/useMyContextHook";
-
+import { IPodcast } from "../types";
+import { useEffect, useState, useMemo } from "react";
+import { howLongAgo } from "../utils/howLongAgo";
 
 const Search = () => {
-  const navigate=useNavigate ()
-  const {handleSearch, podcastList, handleSearchEpisodes, podcastEpiosdesList, searchWord, setSearchWord}= useContextProvider()
+  const navigate = useNavigate();
+  const {
+    handleSearch,
+    podcastList,
+    handleSearchEpisodes,
+    searchWord,
+    setSearchWord,
+    handleSort,
+    loading,
+  } = useContextProvider();
 
+  const [list, setList] = useState<IPodcast[]>([] as IPodcast[]);
 
+  useEffect(() => {
+    setList(podcastList);
+  }, [podcastList]);
 
-  const handleNavigate= (e:number)=>{
-     handleSearchEpisodes(e)
-     navigate('/view-details')
-  }
-  
+  const handleNavigate = (e: number) => {
+    handleSearchEpisodes(e);
+    navigate("/view-details");
+  };
 
+  console.log(podcastList);
 
-  console.log(podcastEpiosdesList )
+  const renderMemo = useMemo(() => {
+    if (loading) {
+      return (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={list.length === 0}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      );
+    }
+
+    if (list.length > 1) {
+      return (
+        <>
+          <CustomSelectComponent
+            options={[
+              {
+                name: "Newest",
+                value: "NEW",
+              },
+              {
+                name: "Oldest",
+                value: "OLD",
+              },
+            ]}
+            isView={false}
+            onChange={handleSort}
+          />
+          <CustomTable
+            tableColumns={["#", "Name", "Released"]}
+            data={list}
+            onRowClick={handleNavigate}
+          />
+        </>
+      );
+    }
+    return null;
+  }, [loading, list]);
 
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
         alignItems: "center",
         width: "full",
         height: "100%",
@@ -44,11 +94,12 @@ const Search = () => {
           gap: 6,
         }}
       >
-        <CustomTextfield handleChange={setSearchWord} handleClick={()=>handleSearch(searchWord)}/>
-        <CustomSelectComponent />
-        <CustomTable tableColumns={["#", "Name", "Released"]} data={podcastList} onRowClick={handleNavigate}/>
+        <CustomTextfield
+          handleChange={setSearchWord}
+          handleClick={() => handleSearch(searchWord)}
+        />
+        {renderMemo}
       </Box>
-      <Box></Box>
     </Box>
   );
 };

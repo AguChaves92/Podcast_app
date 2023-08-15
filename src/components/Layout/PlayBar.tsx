@@ -9,7 +9,7 @@ import { ShuffleSvg } from "../../assets/ShuffleSvg";
 import { IPodcast } from "../../types";
 import VolumeOffIcon from "@mui/icons-material/VolumeOff";
 import VolumeMuteIcon from "@mui/icons-material/VolumeMute";
-import { formatTime } from "../../utils/formatTime";
+import { Repeat } from "../../assets/RepeatSvg";
 
 interface Props {
   icon: ReactNode;
@@ -20,20 +20,46 @@ export const SVGComponent = ({ icon, ...props }: Props) => {
 };
 
 const Playbar = () => {
-  const { selectedTrack, isPlaying, setIsPlaying } = useContextProvider();
+  const {
+    selectedTrack,
+    isPlaying,
+    setIsPlaying,
+    handleNext,
+    handleBack,
+    shuffleList,
+  } = useContextProvider();
   const [track, setTrack] = useState<IPodcast>(selectedTrack);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [timeProgress, setTimeProgress] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(selectedTrack? Number(selectedTrack.trackTimeMillis) :0);
   const [volume, setVolume] = useState(60);
   const [muteVolume, setMuteVolume] = useState(false);
   const progressBarRef = useRef<HTMLInputElement>(null);
   const playAnimationRef = useRef<number>();
 
+  const handleRestart = () => {
+    if (
+      audioRef &&
+      audioRef.current &&
+      progressBarRef &&
+      progressBarRef.current
+    ) {
+      audioRef.current.currentTime = 0;
+      progressBarRef.current.value = "0";
+      setTimeProgress(0);
+    }
+  };
+
+  console.log(selectedTrack.trackTimeMillis)
+
   const onLoadedMetadata = () => {
     if (audioRef && audioRef.current && progressBarRef.current) {
       const seconds = audioRef.current.duration;
-      setDuration(seconds);
+      console.log(seconds)
+      setDuration(
+        seconds
+        );
+
       progressBarRef.current.max = seconds as unknown as string;
     }
   };
@@ -167,8 +193,12 @@ const Playbar = () => {
             width: "500px",
           }}
         >
-          <ShuffleSvg />
-          <BackSvg />
+          <Box onClick={shuffleList}>
+            <ShuffleSvg />
+          </Box>
+          <Box onClick={handleBack}>
+            <BackSvg />
+          </Box>
           {isPlaying ? (
             <Box
               sx={{
@@ -191,21 +221,37 @@ const Playbar = () => {
               />
             </Box>
           ) : (
-            <PlayArrowIcon
+            <Box
               sx={{
-                fontSize: "48px",
-                color: "white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "70px",
+                width: "70px",
+                borderRadius: "166.667px",
+                backgroundColor: "transparent",
               }}
               onClick={togglePlayPause}
-            />
+            >
+              <PlayArrowIcon
+                sx={{
+                  fontSize: "48px",
+                  color: "white",
+                }}
+              />
+            </Box>
           )}
           <audio
             src={track.episodeUrl}
             ref={audioRef}
             onLoadedMetadata={onLoadedMetadata}
           />
-
-          <NextSvg />
+          <Box onClick={handleNext}>
+            <NextSvg />
+          </Box>
+          <Box onClick={handleRestart}>
+            <Repeat />
+          </Box>
         </Box>
         <Box
           sx={{
@@ -242,7 +288,7 @@ const Playbar = () => {
               fontSize: "16px",
             }}
           >
-            {formatTime(Number(track.trackTimeMillis))}
+            {formatCurrentTime(duration)}
           </Typography>
         </Box>
         <Box

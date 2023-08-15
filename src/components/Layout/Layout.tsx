@@ -5,25 +5,14 @@ import { useContextProvider } from "../../hook/useMyContextHook";
 import Playbar from "./PlayBar";
 
 const Layout = () => {
-  const {
-    searchWord,
-    setSearchWord,
-    handleSearch,
-    podcastEpiosdesList,
-    selectedTrack,
-    chooseTrack,
-    isPlaying,
-    setIsPlaying,
-    handlePlay,
-  } = useContextProvider();
+  const { selectedTrack } = useContextProvider();
   const renderPlayBar = useMemo(() => {
     if (selectedTrack && selectedTrack.artistId) {
-      console.log("here");
       return <Playbar />;
     } else {
       return null;
     }
-  }, [selectedTrack,]);
+  }, [selectedTrack]);
 
   return (
     <Box

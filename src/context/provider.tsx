@@ -11,6 +11,8 @@ export const MyContextProvider = ({ children }: IProvider) => {
   const [podcastList, setPodcastList] = useState<IPodcast[]>([] as IPodcast[]);
   const [selectedTrack, setSelectedTrack] = useState<IPodcast>({} as IPodcast);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [index, setIndex] = useState(0);
+  const [loading, setIsLoading] = useState<boolean>(false);
 
   const [podcastEpiosdesList, setPodcastEpisodes] = useState<IPodcast[]>(
     [] as IPodcast[]
@@ -18,14 +20,17 @@ export const MyContextProvider = ({ children }: IProvider) => {
 
   const chooseTrack = (id?: number) => {
     const track = selectedTrack;
-      
+
     if (track && track.trackId === id) {
-      console.log("here");
       setIsPlaying(!isPlaying);
     } else {
       const newSelectedTrack = podcastEpiosdesList.find((track) => {
         return track.trackId === id;
       });
+      const trackIndex = podcastEpiosdesList.findIndex((track) => {
+        return track.trackId === id;
+      });
+      setIndex(trackIndex);
       if (newSelectedTrack) setSelectedTrack(newSelectedTrack);
 
       setIsPlaying(true);
@@ -35,12 +40,81 @@ export const MyContextProvider = ({ children }: IProvider) => {
   const handlePlay = () => {
     if (!selectedTrack) {
       setSelectedTrack(podcastEpiosdesList[0]);
+      setIndex(0);
     }
 
     setIsPlaying(!isPlaying);
   };
 
+  const handleNext = () => {
+    if (index === podcastEpiosdesList.length - 1) {
+      setSelectedTrack(podcastEpiosdesList[0]);
+      setIndex(0);
+    } else {
+      setSelectedTrack(podcastEpiosdesList[index + 1]);
+      setIndex((prev) => prev + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (index === 0) {
+      setSelectedTrack(podcastEpiosdesList[podcastEpiosdesList.length - 1]);
+      setIndex(podcastEpiosdesList.length - 1);
+    } else {
+      setSelectedTrack(podcastEpiosdesList[index - 1]);
+      setIndex((prev) => prev - 1);
+    }
+  };
+
+  const shuffleList = () => {
+    // Create a copy of the list
+    const shuffledList = podcastEpiosdesList;
+
+    // Loop through each element in the list
+    for (let i = shuffledList.length - 1; i > 0; i--) {
+      // Generate a random index between 0 and i
+      const randomIndex = Math.floor(Math.random() * (i + 1));
+
+      // Swap the current element with the element at the random index
+      [shuffledList[i], shuffledList[randomIndex]] = [
+        shuffledList[randomIndex],
+        shuffledList[i],
+      ];
+    }
+
+    setPodcastEpisodes(shuffledList);
+  };
+
+  const handleSort = (sortBy: string, isView: boolean) => {
+    let list = isView ? [...podcastEpiosdesList] : [...podcastList];
+
+    if (sortBy === "NEW") {
+      list = list.sort(
+        (a, b) =>
+          new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+      );
+    } else if (sortBy === "OLD") {
+      list = list.sort(
+        (a, b) =>
+          new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime()
+      );
+    } else if (sortBy === "MILI_ASC") {
+      list = list.sort(
+        (a, b) => (a.trackTimeMillis || 0) - (b.trackTimeMillis || 0)
+      );
+    } else if (sortBy === "MILI_DESC") {
+      list = list.sort(
+        (a, b) => (b.trackTimeMillis || 0) - (a.trackTimeMillis || 0)
+      );
+    } else {
+      throw new Error("Invalid sortBy value");
+    }
+
+    isView ? setPodcastEpisodes(list) : setPodcastList(list);
+  };
+
   const handleSearch = (keyword: string) => {
+    setIsLoading(true);
     fetch(
       `https://api.allorigins.win/get?url=${encodeURIComponent(
         `https://itunes.apple.com/search?term=${keyword}&media=podcast&limit=10`
@@ -54,9 +128,12 @@ export const MyContextProvider = ({ children }: IProvider) => {
         console.log("here", JSON.parse(data.contents));
         parseData(JSON.parse(data.contents), "podcast");
       });
+    setIsLoading(false);
   };
 
   const handleSearchEpisodes = (id: number) => {
+    setIsLoading(true);
+    setPodcastList([]);
     fetch(
       `https://api.allorigins.win/get?url=${encodeURIComponent(
         `https://itunes.apple.com/lookup?id=${id}&entity=podcastEpisode`
@@ -69,6 +146,7 @@ export const MyContextProvider = ({ children }: IProvider) => {
       .then((data) => {
         parseData(JSON.parse(data.contents), "podcast-episode");
       });
+    setIsLoading(false);
   };
 
   const parseData = (data: any, type: string) => {
@@ -84,6 +162,8 @@ export const MyContextProvider = ({ children }: IProvider) => {
         artworkUrl60: podcast.artworkUrl60,
         releaseDate: podcast.releaseDate,
       }));
+
+      console.log(parsedPodcasts);
       setPodcastList(parsedPodcasts);
     }
 
@@ -124,6 +204,11 @@ export const MyContextProvider = ({ children }: IProvider) => {
         handlePlay,
         podcastEpiosdesList,
         handleSearchEpisodes,
+        handleNext,
+        handleBack,
+        shuffleList,
+        handleSort,
+        loading,
       }}
     >
       {children}

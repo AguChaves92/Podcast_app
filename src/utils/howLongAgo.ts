@@ -13,30 +13,28 @@ export function howLongAgo(data: string) {
   const yearsDiff = currentDate.getFullYear() - date.getFullYear();
 
   if (yearsDiff >= 1 && yearsDiff < 2) {
-    return `Created ${yearsDiff} year ago`;
+    return `${yearsDiff} year ago`;
   } else if (yearsDiff >= 1 && yearsDiff >= 2) {
-    return `Created ${yearsDiff} years ago`;
+    return `${yearsDiff} years ago`;
   } else if (monthsDiff >= 1 && monthsDiff < 2) {
-    return `Created ${monthsDiff} month ago`;
+    return `${monthsDiff} month ago`;
   } else if (monthsDiff >= 1 && monthsDiff >= 2) {
-    return `Created ${monthsDiff} months ago`;
+    return `${monthsDiff} months ago`;
   } else if (daysDiff >= 1 && daysDiff < 2) {
     return `Yesterday`;
   } else if (daysDiff > 1 && daysDiff < 7) {
-    return `Created ${daysDiff} days ago`;
-  } else if (daysDiff > 7) {
-    return `Created ${Math.floor(daysDiff / 7)} weeks ago`;
+    return `${daysDiff} days ago`;
+  } else if (daysDiff >= 7 && daysDiff <= 14) {
+    return "Last week";
+  } else if (daysDiff > 14) {
+    return `${Math.floor(daysDiff / 7)} weeks ago`;
   } else if (hoursDiff === 1) {
     return `Ceated an hour ago`;
   } else if (hoursDiff > 1) {
-    return `Created ${hoursDiff} hours ago`;
+    return `${hoursDiff} hours ago`;
   } else if (minutesDiff > 1) {
-    return `Created ${minutesDiff} minutes ago`;
+    return `${minutesDiff} minutes ago`;
   } else {
     return `Less than a minute ago`;
   }
 }
-
-// Usage example:
-const date = "2022-03-14T04:00:00Z";
-console.log(howLongAgo(date));

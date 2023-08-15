@@ -15,24 +15,28 @@ import FormControl from "@mui/material/FormControl";
 export interface OptionSelect {
   name: string;
   value: string;
-  icon?: JSX.Element;
-  disabled?: boolean;
 }
 
 type Props = {
   options: Array<OptionSelect>;
   label?: string;
+  isView?: boolean;
   displayValue?: boolean;
-  onChange: (event: SelectChangeEvent, child: ReactNode) => void;
+  onChange: (e: string, B: boolean) => void;
   icon?: JSX.Element;
   displayLabel?: boolean;
 };
 
-export const CustomSelectComponent = () => {
+export const CustomSelectComponent = ({
+  isView = false,
+  options,
+  onChange,
+}: Props) => {
   const [isVisible, setIsVisible] = useState(false);
   const [sorting, setSorting] = useState("");
   const handleChange = (event: SelectChangeEvent) => {
     setSorting(event.target.value as string);
+    onChange(event.target.value as string, isView);
   };
 
   const toggleVisibility = () => {
@@ -52,7 +56,7 @@ export const CustomSelectComponent = () => {
     >
       <Box
         style={{
-          height:'fit-content',
+          height: "fit-content",
           overflow: "hidden",
           display: isVisible ? "flex" : "none",
           transition: " left 1.5s ease",
@@ -100,10 +104,11 @@ export const CustomSelectComponent = () => {
           value={sorting}
           onChange={handleChange}
         >
-          <MenuItem value={"Name Asc"}>Name ASC</MenuItem>
-          <MenuItem value={"Name, Desc"}>Name DESC</MenuItem>
-          <MenuItem value={"Newest"}>Newest</MenuItem>
-          <MenuItem value={"Oldest"}>Oldest</MenuItem>
+          {options.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </Box>

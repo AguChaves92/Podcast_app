@@ -3,11 +3,15 @@ import { CustomSelectComponent } from "../components/CustomSelect";
 import CustomTextfield from "../components/CustomTextField";
 import CustomTable from "../components/CustomTable";
 import { useContextProvider } from "../hook/useMyContextHook";
-
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import { TickSvg } from "../assets/TickSvg";
+import { useNavigate } from "react-router-dom";
+import { IPodcast } from "../types";
+import { useEffect, useState } from "react";
 
 const ViewDetail = () => {
   const {
@@ -18,7 +22,26 @@ const ViewDetail = () => {
     chooseTrack,
     isPlaying,
     handlePlay,
+    handleSort,
   } = useContextProvider();
+
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    navigate("/");
+  };
+
+  const [list, setList] = useState<IPodcast[]>([] as IPodcast[]);
+  const [podcastName, setPodcastName] = useState<string>('');
+console.log(podcastEpiosdesList)
+  useEffect(() => {
+    setList(podcastEpiosdesList);
+  }, [podcastEpiosdesList]);
+
+  useEffect(()=>{
+    if(podcastEpiosdesList.length> 1){
+      setPodcastName(podcastEpiosdesList[0].collectionName)
+    }
+  },[podcastEpiosdesList.length])
 
   return podcastEpiosdesList.length === 0 ? (
     <Backdrop
@@ -49,11 +72,40 @@ const ViewDetail = () => {
           gap: 2,
         }}
       >
-        <CustomTextfield
-          defaultValue={searchWord}
-          handleChange={setSearchWord}
-          handleClick={() => handleSearch(searchWord)}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#1A1A1A",
+              borderRadius: "15px",
+              width: "65px",
+              height: "40px",
+            }}
+            onClick={handleNavigate}
+          >
+            <ArrowBackIosIcon
+              sx={{
+                color: "whitesmoke",
+                fontSize: "22px",
+              }}
+            />
+          </Box>
+
+          <CustomTextfield
+            defaultValue={searchWord}
+            handleChange={setSearchWord}
+            handleClick={() => handleSearch(searchWord)}
+          />
+        </Box>
         <img
           src="/Banner.png"
           alt="banner"
@@ -91,25 +143,55 @@ const ViewDetail = () => {
               onClick={handlePlay}
             />
           )}
-
-          <Typography
-            sx={{
-              fontSize: "32px",
-              color: "white",
-              fontWeight: 700,
-            }}
-          >
-            {podcastEpiosdesList[1].collectionName}
-          </Typography>
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <Box
+              sx={{
+                width: "80%",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: podcastName.length > 50 ? "18px" : "32px",
+                  color: "white",
+                  fontWeight: 700,
+                  textAlign: "center",
+                }}
+              >
+                {podcastName}
+              </Typography>
+            </Box>
+            <TickSvg />
+          </Box>
           <Box width="20%">
-            <CustomSelectComponent />
+            <CustomSelectComponent
+              options={[
+                {
+                  name: "Newest",
+                  value: "NEW",
+                },
+                {
+                  name: "Oldest",
+                  value: "OLD",
+                },
+                {
+                  name: "Duration ASC",
+                  value: "MILI_ASC",
+                },
+                {
+                  name: "Duration DESC",
+                  value: "MILI_DESC",
+                },
+              ]}
+              isView={true}
+              onChange={handleSort}
+            />
           </Box>
         </Box>
 
         <CustomTable
           isView={true}
           tableColumns={["#", "Name", "Topic", "Released"]}
-          data={podcastEpiosdesList}
+          data={list}
           onRowClick={chooseTrack}
         />
       </Box>
