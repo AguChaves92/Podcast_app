@@ -113,9 +113,9 @@ export const MyContextProvider = ({ children }: IProvider) => {
     isView ? setPodcastEpisodes(list) : setPodcastList(list);
   };
 
-  const handleSearch = (keyword: string) => {
+  const handleSearch = async (keyword: string) => {
     setIsLoading(true);
-    fetch(
+    await fetch(
       `https://api.allorigins.win/get?url=${encodeURIComponent(
         `https://itunes.apple.com/search?term=${keyword}&media=podcast&limit=10`
       )}`
@@ -131,10 +131,10 @@ export const MyContextProvider = ({ children }: IProvider) => {
     setIsLoading(false);
   };
 
-  const handleSearchEpisodes = (id: number) => {
+  const handleSearchEpisodes =async  (id: number) => {
     setIsLoading(true);
-    setPodcastList([]);
-    fetch(
+    setPodcastEpisodes([]);
+    await  fetch(
       `https://api.allorigins.win/get?url=${encodeURIComponent(
         `https://itunes.apple.com/lookup?id=${id}&entity=podcastEpisode`
       )}`

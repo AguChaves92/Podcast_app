@@ -23,6 +23,7 @@ const ViewDetail = () => {
     isPlaying,
     handlePlay,
     handleSort,
+    loading,
   } = useContextProvider();
 
   const navigate = useNavigate();
@@ -31,22 +32,22 @@ const ViewDetail = () => {
   };
 
   const [list, setList] = useState<IPodcast[]>([] as IPodcast[]);
-  const [podcastName, setPodcastName] = useState<string>('');
-console.log(podcastEpiosdesList)
+  const [podcastName, setPodcastName] = useState<string>("");
+  console.log(podcastEpiosdesList);
   useEffect(() => {
     setList(podcastEpiosdesList);
   }, [podcastEpiosdesList]);
 
-  useEffect(()=>{
-    if(podcastEpiosdesList.length> 1){
-      setPodcastName(podcastEpiosdesList[0].collectionName)
+  useEffect(() => {
+    if (podcastEpiosdesList.length > 1) {
+      setPodcastName(podcastEpiosdesList[0].collectionName);
     }
-  },[podcastEpiosdesList.length])
+  }, [podcastEpiosdesList.length]);
 
-  return podcastEpiosdesList.length === 0 ? (
+  return loading ? (
     <Backdrop
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      open={podcastEpiosdesList.length === 0}
+      open={loading}
     >
       <CircularProgress color="inherit" />
     </Backdrop>
@@ -146,7 +147,7 @@ console.log(podcastEpiosdesList)
           <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
             <Box
               sx={{
-                width: "80%",
+                width: "90%",
               }}
             >
               <Typography
@@ -157,7 +158,9 @@ console.log(podcastEpiosdesList)
                   textAlign: "center",
                 }}
               >
-                {podcastName}
+                {podcastEpiosdesList.length > 0
+                  ? podcastEpiosdesList[0].collectionName
+                  : ""}
               </Typography>
             </Box>
             <TickSvg />

@@ -6,7 +6,6 @@ import CustomTable from "../components/CustomTable";
 import { useContextProvider } from "../hook/useMyContextHook";
 import { IPodcast } from "../types";
 import { useEffect, useState, useMemo } from "react";
-import { howLongAgo } from "../utils/howLongAgo";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -20,14 +19,14 @@ const Search = () => {
     loading,
   } = useContextProvider();
 
-  const [list, setList] = useState<IPodcast[]>([] as IPodcast[]);
+  const [list, setList] = useState<IPodcast[]>(podcastList);
 
   useEffect(() => {
     setList(podcastList);
   }, [podcastList]);
 
-  const handleNavigate = (e: number) => {
-    handleSearchEpisodes(e);
+  const handleNavigate =  (e: number) => {
+     handleSearchEpisodes(e);
     navigate("/view-details");
   };
 
@@ -38,7 +37,7 @@ const Search = () => {
       return (
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={list.length === 0}
+          open={loading}
         >
           <CircularProgress color="inherit" />
         </Backdrop>
