@@ -38,6 +38,13 @@ const ViewDetail = () => {
     setList(podcastEpiosdesList);
   }, [podcastEpiosdesList]);
 
+
+  const searchPodcast= async()=>{
+
+    await handleSearch(searchWord)
+    navigate("/");
+  }
+
   useEffect(() => {
     if (podcastEpiosdesList.length > 1) {
       setPodcastName(podcastEpiosdesList[0].collectionName);
@@ -104,7 +111,7 @@ const ViewDetail = () => {
           <CustomTextfield
             defaultValue={searchWord}
             handleChange={setSearchWord}
-            handleClick={() => handleSearch(searchWord)}
+            handleClick={searchPodcast}
           />
         </Box>
         <img

@@ -17,6 +17,7 @@ const Search = () => {
     setSearchWord,
     handleSort,
     loading,
+    
   } = useContextProvider();
 
   const [list, setList] = useState<IPodcast[]>(podcastList);
@@ -25,8 +26,8 @@ const Search = () => {
     setList(podcastList);
   }, [podcastList]);
 
-  const handleNavigate =  (e: number) => {
-     handleSearchEpisodes(e);
+  const handleNavigate = async (e: number) => {
+    await handleSearchEpisodes(e);
     navigate("/view-details");
   };
 
@@ -95,6 +96,7 @@ const Search = () => {
       >
         <CustomTextfield
           handleChange={setSearchWord}
+          defaultValue={searchWord}
           handleClick={() => handleSearch(searchWord)}
         />
         {renderMemo}

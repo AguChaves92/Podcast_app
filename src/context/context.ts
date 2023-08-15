@@ -14,8 +14,8 @@ interface IContext {
   shuffleList: () => void;
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   chooseTrack: (e?: number) => void;
-  handleSearch: (e: string) => void;
-  handleSearchEpisodes: (e: number) => void;
+  handleSearch: (e: string) => Promise<void>
+  handleSearchEpisodes: (e: number) => Promise<void>
   handleSort: (e: string, b: boolean) => void;
   loading: boolean;
 }
@@ -50,11 +50,7 @@ export const MyContext = createContext<IContext>({
   },
   podcastList: [],
   podcastEpiosdesList: [],
-  handleSearchEpisodes: (e: number) => {
-    return;
-  },
-  handleSearch: (e: string) => {
-    return;
-  },
+  handleSearchEpisodes: (e: number) => Promise.resolve(),
+  handleSearch: (e: string) =>Promise.resolve(),
   loading: false,
 });
