@@ -7,7 +7,7 @@ import Playbar from "./PlayBar";
 const Layout = () => {
   const { selectedTrack } = useContextProvider();
   const renderPlayBar = useMemo(() => {
-    if (selectedTrack && selectedTrack.artistId) {
+    if (selectedTrack && selectedTrack.trackId) {
       return <Playbar />;
     } else {
       return null;

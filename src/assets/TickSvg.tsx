@@ -20,8 +20,8 @@ export const TickSvg = () => {
           y2="21.4198"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#138BD7" />
-          <stop offset="1" stop-color="#62AAFB" />
+          <stop stopColor="#138BD7" />
+          <stop offset="1" stopColor="#62AAFB" />
         </linearGradient>
       </defs>
     </svg>

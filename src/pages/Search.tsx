@@ -31,7 +31,6 @@ const Search = () => {
     navigate("/view-details");
   };
 
-  console.log(podcastList);
 
   const renderMemo = useMemo(() => {
     if (loading) {

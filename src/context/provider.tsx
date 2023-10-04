@@ -19,6 +19,7 @@ export const MyContextProvider = ({ children }: IProvider) => {
   );
 
   const chooseTrack = (id?: number) => {
+
     const track = selectedTrack;
 
     if (track && track.trackId === id) {
@@ -125,7 +126,6 @@ export const MyContextProvider = ({ children }: IProvider) => {
         throw new Error("Network response was not ok.");
       })
       .then((data) => {
-        console.log("here", JSON.parse(data.contents));
         parseData(JSON.parse(data.contents), "podcast");
       });
     setIsLoading(false);
@@ -162,8 +162,6 @@ export const MyContextProvider = ({ children }: IProvider) => {
         artworkUrl60: podcast.artworkUrl60,
         releaseDate: podcast.releaseDate,
       }));
-
-      console.log(parsedPodcasts);
       setPodcastList(parsedPodcasts);
     }
 
@@ -189,6 +187,7 @@ export const MyContextProvider = ({ children }: IProvider) => {
       setPodcastEpisodes(parsedEpisodes);
     }
   };
+
 
   return (
     <MyContext.Provider

@@ -33,7 +33,6 @@ const ViewDetail = () => {
 
   const [list, setList] = useState<IPodcast[]>([] as IPodcast[]);
   const [podcastName, setPodcastName] = useState<string>("");
-  console.log(podcastEpiosdesList);
   useEffect(() => {
     setList(podcastEpiosdesList);
   }, [podcastEpiosdesList]);

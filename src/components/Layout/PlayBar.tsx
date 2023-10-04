@@ -31,7 +31,9 @@ const Playbar = () => {
   const [track, setTrack] = useState<IPodcast>(selectedTrack);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [timeProgress, setTimeProgress] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(selectedTrack? Number(selectedTrack.trackTimeMillis) :0);
+  const [duration, setDuration] = useState<number>(
+    selectedTrack ? Number(selectedTrack.trackTimeMillis) : 0
+  );
   const [volume, setVolume] = useState(60);
   const [muteVolume, setMuteVolume] = useState(false);
   const progressBarRef = useRef<HTMLInputElement>(null);
@@ -50,15 +52,13 @@ const Playbar = () => {
     }
   };
 
-  console.log(selectedTrack.trackTimeMillis)
+
+
 
   const onLoadedMetadata = () => {
     if (audioRef && audioRef.current && progressBarRef.current) {
       const seconds = audioRef.current.duration;
-      console.log(seconds)
-      setDuration(
-        seconds
-        );
+      setDuration(seconds);
 
       progressBarRef.current.max = seconds as unknown as string;
     }
@@ -96,9 +96,11 @@ const Playbar = () => {
   }, [volume, audioRef, muteVolume]);
 
   useEffect(() => {
-    setTrack(selectedTrack);
-    setDuration(selectedTrack.trackTimeMillis as number);
-  }, [selectedTrack]);
+    if (selectedTrack.trackId !== track.trackId) {
+      setTrack(selectedTrack);
+      setDuration(selectedTrack.trackTimeMillis as number);
+    }
+  }, [selectedTrack, track]);
 
   useEffect(() => {
     setTimeProgress(0);
