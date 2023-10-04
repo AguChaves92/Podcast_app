@@ -4,7 +4,7 @@ To start the proyect:
 
 Clone it: `git clone git@github.com:AguChaves92/Podcast_app.git`
 
-Run: `npm i` (or `npm isntall --legacy-peer-deps` in case of errors)
+Run: `npm i --legacy-peer-deps`
 
 Run: `npm start`
 
